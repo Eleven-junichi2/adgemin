@@ -1,5 +1,6 @@
 def navigate():
-    addon_name = input("What's your addon name?: "))
+    addon_name = input(("What's your addon name?: "))
+
 
 def main():
     navigate()
