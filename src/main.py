@@ -2,6 +2,8 @@ from pathlib import Path
 import sys
 import uuid
 
+import fire
+
 __file__ = sys.argv[0]
 
 

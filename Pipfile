@@ -9,6 +9,7 @@ flake8 = "*"
 autopep8 = "*"
 
 [packages]
+fire = "*"
 
 [requires]
 python_version = "3.7"
