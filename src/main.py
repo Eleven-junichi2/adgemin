@@ -159,16 +159,28 @@ def generate_addon(author_name, addon_name):
     pack_icon_path.touch()
 
 
-def navigate():
+def navigate(addon_name="", author_name=""):
+    """Usage: adgemin [--addon_name --author_name] <command>
+
+Commands:
+    help   Show this help
+    """
     print("'Adgemin' minecraft addon template generator")
     print("Created by eleven-junichi2")
-    author_name = input(("What's your name as author of your addon?"))
-    addon_name = input(("What's your addon name?: "))
+    if not addon_name:
+        addon_name = input(("What's your addon name?: "))
+    if not author_name:
+        author_name = input(("What's your name as author of your addon?"))
     generate_addon(author_name, addon_name)
+    print("---")
+    print(f"Addon's name: {addon_name}")
+    print(f"Author: {author_name}")
+    print("---")
+    input("↑ successfully generated. press enter to exit:")
 
 
 def main():
-    navigate()
+    fire.Fire(navigate)
 
 
 if __name__ == "__main__":
