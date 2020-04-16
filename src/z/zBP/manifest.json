@@ -1,0 +1,18 @@
+{
+    "format_version": 2,
+    "header": {
+        "description": "Created by jun",
+        "name": "z resource Pack",
+        "uuid": "87ad82d9-a715-49d2-823c-8b0252648dfe",
+        "version": [ 0, 0, 1 ],
+        "min_engine_version": [ 1, 14, 0 ]
+    },
+    "modules": [
+        {
+            "description": "z resource pack",
+            "type": "resources",
+            "uuid": "856fa19a-a974-4563-a9e1-2e4c74029e74",
+            "version": [ 0, 0, 1 ]
+        }
+    ]
+}

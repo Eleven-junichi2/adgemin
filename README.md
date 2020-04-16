@@ -1,2 +1,2 @@
 # adgemin
-minecraft addon project generator
+minecraft addon template generator & packager
