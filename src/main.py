@@ -1,10 +1,13 @@
 from pathlib import Path
 import sys
+import os
 import uuid
 
 import fire
 
 __file__ = sys.argv[0]
+
+DEFAULT_ADDON_GEN_LOCATION = str(Path(__file__).parent.resolve())
 
 
 def generate_manifest(addon_name, author_name) -> tuple:
@@ -58,8 +61,8 @@ def generate_manifest(addon_name, author_name) -> tuple:
     return rp_manifest_json, bp_manifest_json
 
 
-def generate_addon(author_name, addon_name):
-    addon_path = Path(__file__).parent / addon_name
+def generate_addon(author_name, addon_name, generate_location):
+    addon_path = Path(generate_location) / addon_name
     addon_path.mkdir()
 
     # generate behavior pack
@@ -159,8 +162,9 @@ def generate_addon(author_name, addon_name):
     pack_icon_path.touch()
 
 
-def navigate(addon_name="", author_name=""):
-    """Usage: adgemin [--addon_name --author_name] <command>
+def navigate(addon_name="", author_name="",
+             generate_location=""):
+    """Usage: adgemin [--addon_name --author_name --generate_location] <command>
 
 Commands:
     help   Show this help
@@ -168,15 +172,35 @@ Commands:
     print("'Adgemin' minecraft addon template generator")
     print("Created by eleven-junichi2")
     if not addon_name:
-        addon_name = input(("What's your addon name?: "))
+        addon_name = input("What is your addon name?> ")
     if not author_name:
-        author_name = input(("What's your name as author of your addon?"))
-    generate_addon(author_name, addon_name)
+        author_name = input("What is your name as author of your addon?> ")
+    if not generate_location:
+        while True:
+            print("Where do you want to generate this addon template?")
+            print("If you enter nothing, the location will be:")
+            inputed = input(
+                f"'{DEFAULT_ADDON_GEN_LOCATION}'> ")
+            if not inputed:
+                generate_location = DEFAULT_ADDON_GEN_LOCATION
+                break
+            else:
+                if os.path.exists(inputed):
+                    if os.path.isdir(inputed):
+                        generate_location = inputed
+                        break
+                    else:
+                        print("This location is not directory.\n")
+                else:
+                    print("This directory is not exists.\n")
+    generate_addon(author_name, addon_name, generate_location)
     print("---")
     print(f"Addon's name: {addon_name}")
     print(f"Author: {author_name}")
     print("---")
-    input("↑ successfully generated. press enter to exit:")
+    print(
+        f"↑ Successfully generated at '{generate_location}'.")
+    input("Press enter to exit:")
 
 
 def main():
