@@ -2,11 +2,13 @@ from pathlib import Path
 import sys
 import os
 import uuid
+import json
 
 import fire
 
 __file__ = sys.argv[0]
 
+TRANSLATION_PATH = Path(__file__).parent / "translation"
 DEFAULT_ADDON_GEN_LOCATION = str(Path(__file__).parent.resolve())
 
 
@@ -169,18 +171,26 @@ def navigate(addon_name="", author_name="",
 Commands:
     help   Show this help
     """
-    TRANSLATION = {"japan": "",
-                   ""}
-    print("'Adgemin' minecraft addon template generator")
-    print("Created by eleven-junichi2")
+    with open(str(Path(__file__).parent / "config.json"),
+              encoding="utf-8_sig") as f:
+        LANG = json.load(f)["language"]
+    tl = {}
+    with open(str(TRANSLATION_PATH / "jp.json"), "r",
+              encoding="utf-8_sig") as f:
+        tl["japanese"] = json.load(f)
+    with open(str(TRANSLATION_PATH / "en.json"), "r",
+              encoding="utf-8_sig") as f:
+        tl["english"] = json.load(f)
+    print(tl[LANG]["title"])
+    print(tl[LANG]["credit"])
     if not addon_name:
-        addon_name = input("What is your addon name?> ")
+        addon_name = input(tl[LANG]["input_addon_name"])
     if not author_name:
-        author_name = input("What is your name as author of your addon?> ")
+        author_name = input(tl[LANG]["input_author_name"])
     if not generate_location:
         while True:
-            print("Where do you want to generate this addon template?")
-            print("If you enter nothing, the location will be:")
+            print(tl[LANG]["input_location"])
+            print(tl[LANG]["if_you_enter_nothing"])
             inputed = input(
                 f"'{DEFAULT_ADDON_GEN_LOCATION}'> ")
             if not inputed:
@@ -192,17 +202,17 @@ Commands:
                         generate_location = inputed
                         break
                     else:
-                        print("This location is not directory.\n")
+                        print(tl[LANG]["location_not_dir"])
                 else:
-                    print("This directory is not exists.\n")
+                    print(tl[LANG]["directory_not_exists"])
     generate_addon(author_name, addon_name, generate_location)
     print("---")
-    print(f"Addon's name: {addon_name}")
-    print(f"Author: {author_name}")
+    print(f"{tl[LANG]['result_addon_name']} {addon_name}")
+    print(f"{tl[LANG]['result_author_name']} {author_name}")
     print("---")
     print(
-        f"↑ Successfully generated at '{generate_location}'.")
-    input("Press enter to exit:")
+        f"↑ {tl[LANG]['successfully']}'{generate_location}'")
+    input(tl[LANG]["exit"])
 
 
 def main():
