@@ -7,6 +7,6 @@
 デフォルトだと英語で表示されます。readme(使い方).txtに表示を日本語に変更する方法を載せています。
 ## ダウンロード(Windows)
 - Download link → https://github.com/Eleven-junichi2/adgemin/releases/download/1.0.0/adgemin_v_1_0_0.zip
-フォルダはzip形式で圧縮しています
-解凍して好きな場所に配置してください
-実行ファイルはapdgemin.exeという名前です
+フォルダはzip形式で圧縮しています。
+解凍して好きな場所に配置してください。
+実行ファイルはapdgemin.exeという名前です。
