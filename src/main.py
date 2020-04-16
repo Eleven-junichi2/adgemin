@@ -169,6 +169,8 @@ def navigate(addon_name="", author_name="",
 Commands:
     help   Show this help
     """
+    TRANSLATION = {"japan": "",
+                   ""}
     print("'Adgemin' minecraft addon template generator")
     print("Created by eleven-junichi2")
     if not addon_name:
