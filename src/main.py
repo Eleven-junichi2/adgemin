@@ -63,8 +63,8 @@ def generate_manifest(addon_name, author_name) -> tuple:
     return rp_manifest_json, bp_manifest_json
 
 
-def generate_addon(author_name, addon_name, generate_location):
-    addon_path = Path(generate_location) / addon_name
+def generate_addon(author_name, addon_name, generating_location):
+    addon_path = Path(generating_location) / addon_name
     addon_path.mkdir()
 
     # generate behavior pack
@@ -164,16 +164,14 @@ def generate_addon(author_name, addon_name, generate_location):
     pack_icon_path.touch()
 
 
-def navigate(addon_name="", author_name="",
-             generate_location=""):
-    """Usage: adgemin [--addon_name --author_name --generate_location] <command>
-
-Commands:
-    help   Show this help
-    """
+def load_config() -> dict:
     with open(str(Path(__file__).parent / "config.json"),
               encoding="utf-8_sig") as f:
-        LANG = json.load(f)["language"]
+        config = json.load(f)
+    return config
+
+
+def load_translation() -> dict:
     tl = {}
     with open(str(TRANSLATION_PATH / "jp.json"), "r",
               encoding="utf-8_sig") as f:
@@ -181,37 +179,57 @@ Commands:
     with open(str(TRANSLATION_PATH / "en.json"), "r",
               encoding="utf-8_sig") as f:
         tl["english"] = json.load(f)
+    return tl
+
+
+def navigate(addon_name="", author_name="",
+             generating_location=""):
+    """Usage: adgemin [--addon_name --author_name --generating_location]"""
+    config = load_config()
+    LANG = config["language"]
+    tl = load_translation()
+    if config["generating_location"]:
+        if not (os.path.exists(config["generating_location"]) and
+                os.path.isdir(config["generating_location"])):
+            print(tl[LANG]["conf_err"])
+            print(tl[LANG]["conf_err_how_to_solve"])
+            print("{} {}".format(tl[LANG]["conf_err_gen_location"],
+                                 config["generating_location"]))
+            input(tl[LANG]["exit"])
+            return
+        else:
+            generating_location = config["generating_location"]
     print(tl[LANG]["title"])
     print(tl[LANG]["credit"])
     if not addon_name:
         addon_name = input(tl[LANG]["input_addon_name"])
     if not author_name:
         author_name = input(tl[LANG]["input_author_name"])
-    if not generate_location:
+    if not generating_location:
         while True:
             print(tl[LANG]["input_location"])
             print(tl[LANG]["if_you_enter_nothing"])
             inputed = input(
                 f"'{DEFAULT_ADDON_GEN_LOCATION}'> ")
             if not inputed:
-                generate_location = DEFAULT_ADDON_GEN_LOCATION
+                generating_location = DEFAULT_ADDON_GEN_LOCATION
                 break
             else:
                 if os.path.exists(inputed):
                     if os.path.isdir(inputed):
-                        generate_location = inputed
+                        generating_location = inputed
                         break
                     else:
                         print(tl[LANG]["location_not_dir"])
                 else:
                     print(tl[LANG]["directory_not_exists"])
-    generate_addon(author_name, addon_name, generate_location)
+    generate_addon(author_name, addon_name, generating_location)
     print("---")
     print(f"{tl[LANG]['result_addon_name']} {addon_name}")
     print(f"{tl[LANG]['result_author_name']} {author_name}")
     print("---")
     print(
-        f"↑ {tl[LANG]['successfully']}'{generate_location}'")
+        f"↑ {tl[LANG]['successfully']}'{generating_location}'")
     input(tl[LANG]["exit"])
 
 

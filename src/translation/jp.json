@@ -10,5 +10,8 @@
     "result_addon_name": "アドオン名:",
     "result_author_name": "作者名:",
     "successfully": "次の場所に生成しました:",
-    "exit": "入力するとこのアプリケーションを終了します> "
+    "exit": "入力するとこのアプリケーションを終了します> ",
+    "conf_err": "config.jsonの設定が正しくありません",
+    "conf_err_how_to_solve": "config.jsonをテキストエディタで開いて修正してください",
+    "conf_err_gen_location": "generating_locationに設定されているパスが正しくありません:"
 }
