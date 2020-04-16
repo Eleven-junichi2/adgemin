@@ -202,9 +202,15 @@ def navigate(addon_name="", author_name="",
     print(tl[LANG]["title"])
     print(tl[LANG]["credit"])
     if not addon_name:
-        addon_name = input(tl[LANG]["input_addon_name"])
+        while True:
+            addon_name = input(tl[LANG]["input_addon_name"])
+            if addon_name:
+                break
     if not author_name:
-        author_name = input(tl[LANG]["input_author_name"])
+        while True:
+            author_name = input(tl[LANG]["input_author_name"])
+            if author_name:
+                break
     if not generating_location:
         while True:
             print(tl[LANG]["input_location"])
