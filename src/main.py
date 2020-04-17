@@ -13,85 +13,94 @@ TRANSLATION_PATH = Path(__file__).parent / "translation"
 DEFAULT_ADDON_GEN_LOCATION = str(Path(__file__).parent.resolve())
 
 
-def generate_manifest(addon_name, author_name) -> tuple:
-    """
-    return (manifest of behavior pack), (manifest of resource pack)
-    """
-    rp_header_uuid = uuid.uuid4()
-    rp_modules_uuid = uuid.uuid4()
-    rp_manifest_json = (
-        '{\n',
-        '    "format_version": 2,\n',
-        '    "header": {\n',
-        f'        "description": "Created by {author_name}",\n',
-        f'        "name": "{addon_name} resource Pack",\n',
-        f'        "uuid": "{rp_header_uuid}",\n',
-        f'        "version": [ 0, 0, 1 ],\n',
-        f'        "min_engine_version": [ 1, 14, 0 ]\n'
-        '    },\n'
-        '    "modules": [\n'
-        '        {\n'
-        f'            "description": "{addon_name} resource pack",\n',
-        '            "type": "resources",\n'
-        f'            "uuid": "{rp_modules_uuid}",\n',
-        f'            "version": [ 0, 0, 1 ]\n',
-        '        }\n'
-        '    ]\n'
-        '}\n'
-    )
-    bp_header_uuid = uuid.uuid4()
-    bp_modules_uuid = uuid.uuid4()
-    bp_manifest_json = (
-        '{\n',
-        '    "format_version": 2,\n',
-        '    "header": {\n',
-        f'        "description": "Created by {author_name}",\n',
-        f'        "name": "{addon_name} behavior pack",\n',
-        f'        "uuid": "{bp_header_uuid}",\n',
-        f'        "version": [ 0, 0, 1 ],\n',
-        f'        "min_engine_version": [ 1, 14, 0 ]\n'
-        '    },\n'
-        '    "modules": [\n'
-        '        {\n'
-        f'            "description": "{addon_name} behavior pack",\n',
-        '            "type": "data",\n'
-        f'            "uuid": "{bp_modules_uuid}",\n',
-        f'            "version": [ 0, 0, 1 ]\n',
-        '        }\n'
-        '    ]\n'
-        '}\n'
-    )
-    return rp_manifest_json, bp_manifest_json
+class AddonGenerator:
+    def __init__(self, addon_name, author_name, generating_location):
+        self.addon_name = addon_name
+        self.author_name = author_name
+        self.generating_location = generating_location
 
+    def manifest_str(self) -> tuple:
+        """
+        return (manifest of behavior pack), (manifest of resource pack)
+        """
+        rp_header_uuid = uuid.uuid4()
+        rp_modules_uuid = uuid.uuid4()
+        rp_manifest_json = (
+            '{\n',
+            '    "format_version": 2,\n',
+            '    "header": {\n',
+            f'        "description": "Created by {self.author_name}",\n',
+            f'        "name": "{self.addon_name} resource Pack",\n',
+            f'        "uuid": "{rp_header_uuid}",\n',
+            f'        "version": [ 0, 0, 1 ],\n',
+            f'        "min_engine_version": [ 1, 14, 0 ]\n'
+            '    },\n'
+            '    "modules": [\n'
+            '        {\n'
+            f'            "description": "{self.addon_name} resource pack",\n',
+            '            "type": "resources",\n'
+            f'            "uuid": "{rp_modules_uuid}",\n',
+            f'            "version": [ 0, 0, 1 ]\n',
+            '        }\n'
+            '    ]\n'
+            '}\n'
+        )
+        bp_header_uuid = uuid.uuid4()
+        bp_modules_uuid = uuid.uuid4()
+        bp_manifest_json = (
+            '{\n',
+            '    "format_version": 2,\n',
+            '    "header": {\n',
+            f'        "description": "Created by {self.author_name}",\n',
+            f'        "name": "{self.addon_name} behavior pack",\n',
+            f'        "uuid": "{bp_header_uuid}",\n',
+            f'        "version": [ 0, 0, 1 ],\n',
+            f'        "min_engine_version": [ 1, 14, 0 ]\n'
+            '    },\n'
+            '    "modules": [\n'
+            '        {\n'
+            f'            "description": "{self.addon_name} behavior pack",\n',
+            '            "type": "data",\n'
+            f'            "uuid": "{bp_modules_uuid}",\n',
+            f'            "version": [ 0, 0, 1 ]\n',
+            '        }\n'
+            '    ]\n'
+            '}\n'
+        )
+        return rp_manifest_json, bp_manifest_json
 
-def generate_behavior_pack(author_name, addon_name, where_to_generate: Path):
-    behavior_pack_path = where_to_generate / f"{addon_name}BP"
-    shutil.copytree(Path(__file__).parent / "addon_template" / "templateBP",
-                    behavior_pack_path)
-    manifest_path = behavior_pack_path / "manifest.json"
-    manifest_path.touch()
-    with manifest_path.open("w") as file:
-        for text in generate_manifest(addon_name, author_name)[0]:
-            file.write(text)
+    def generate_behavior_pack(self):
+        behavior_pack_path = Path(self.generating_location) \
+            / self.addon_name / \
+            f"{self.addon_name}BP"
+        shutil.copytree(
+            Path(__file__).parent / "addon_template" / "templateBP",
+            behavior_pack_path)
+        manifest_path = behavior_pack_path / "manifest.json"
+        manifest_path.touch()
+        with manifest_path.open("w") as file:
+            for text in self.manifest_str()[0]:
+                file.write(text)
 
+    def generate_resource_pack(self):
+        resource_pack_path = Path(self.generating_location) \
+            / self.addon_name / \
+            f"{self.addon_name}RP"
+        shutil.copytree(
+            Path(__file__).parent / "addon_template" / "templateRP",
+            resource_pack_path)
 
-def generate_resource_pack(author_name, addon_name, where_to_generate: Path):
-    resource_pack_path = where_to_generate / f"{addon_name}RP"
-    shutil.copytree(Path(__file__).parent / "addon_template" / "templateRP",
-                    resource_pack_path)
+        manifest_path = resource_pack_path / "manifest.json"
+        manifest_path.touch()
+        with manifest_path.open("w") as file:
+            for text in self.manifest_str()[1]:
+                file.write(text)
 
-    manifest_path = resource_pack_path / "manifest.json"
-    manifest_path.touch()
-    with manifest_path.open("w") as file:
-        for text in generate_manifest(addon_name, author_name)[1]:
-            file.write(text)
-
-
-def generate_addon(author_name, addon_name, generating_location):
-    addon_path = Path(generating_location) / addon_name
-    addon_path.mkdir()
-    generate_behavior_pack(author_name, addon_name, addon_path)
-    generate_resource_pack(author_name, addon_name, addon_path)
+    def generate(self):
+        addon_path = Path(self.generating_location) / self.addon_name
+        addon_path.mkdir()
+        self.generate_behavior_pack()
+        self.generate_resource_pack()
 
 
 def load_config() -> dict:
@@ -114,7 +123,9 @@ def load_translation() -> dict:
 
 def navigate(addon_name="", author_name="",
              generating_location=""):
-    """Usage: adgemin [--addon_name --author_name --generating_location]"""
+    """Usage: adgemin [--addon_name --author_name --generating_location]
+    here is CUI program
+    """
     config = load_config()
     LANG = config["language"]
     tl = load_translation()
@@ -159,7 +170,8 @@ def navigate(addon_name="", author_name="",
                         print(tl[LANG]["location_not_dir"])
                 else:
                     print(tl[LANG]["directory_not_exists"])
-    generate_addon(author_name, addon_name, generating_location)
+    AddonGenerator(addon_name, author_name, Path(
+        generating_location)).generate()
     print("---")
     print(f"{tl[LANG]['result_addon_name']} {addon_name}")
     print(f"{tl[LANG]['result_author_name']} {author_name}")
