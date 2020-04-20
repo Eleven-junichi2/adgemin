@@ -124,7 +124,7 @@ def load_translation() -> dict:
 def navigate(addon_name="", author_name="",
              generating_location=""):
     """Usage: adgemin [--addon_name --author_name --generating_location]
-    here is CUI program
+    this is the function for CUI program
     """
     config = load_config()
     LANG = config["language"]
